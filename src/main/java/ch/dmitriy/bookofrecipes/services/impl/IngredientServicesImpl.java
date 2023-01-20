@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Service
 public class IngredientServicesImpl implements IngredientServices {
-    private Map<Long, Ingredient> ingredients = new HashMap<>();
+    private  Map<Long, Ingredient> ingredients = new HashMap<>();
     private Long ingredientId = 1L;
 
     @Override
@@ -25,4 +25,35 @@ public class IngredientServicesImpl implements IngredientServices {
 
     }
 
+    @Override
+    public String getAllIngredient() {
+        return ingredients.toString();
+
+    }
+
+
+
+    @Override
+    public Ingredient editIngredient(long ingredientId, Ingredient ingredient) {
+        if (ingredients.containsKey(ingredientId)) {
+            ingredients.put(ingredientId, ingredient);
+            return ingredient;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean deleteIngredient(long ingredientId) {
+        if (ingredients.containsKey(ingredientId)) {
+            ingredients.remove(ingredientId);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void deleteAllIngredients() {
+        ingredients = new HashMap<>();
+    }
 }
+
