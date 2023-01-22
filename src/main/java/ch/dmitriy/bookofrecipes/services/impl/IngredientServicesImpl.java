@@ -4,6 +4,7 @@ import ch.dmitriy.bookofrecipes.model.Ingredient;
 import ch.dmitriy.bookofrecipes.services.IngredientServices;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,9 +27,8 @@ public class IngredientServicesImpl implements IngredientServices {
     }
 
     @Override
-    public String getAllIngredient() {
-        return ingredients.toString();
-
+    public Collection<Ingredient> getAllIngredient() {
+        return ingredients.values();
     }
 
 

@@ -5,6 +5,9 @@ import ch.dmitriy.bookofrecipes.services.IngredientServices;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/ingredient")
 public class IngredientController {
@@ -15,7 +18,7 @@ public class IngredientController {
     }
 
     @PostMapping
-    public ResponseEntity<Ingredient> createIngredient(@RequestBody Ingredient ingredient) {
+    public ResponseEntity<Ingredient> createIngredient(@Valid @RequestBody Ingredient ingredient) {
         Ingredient createdIngredient = ingredientServices.creatIngredient(ingredient);
         return ResponseEntity.ok(createdIngredient);
     }
@@ -30,8 +33,8 @@ public class IngredientController {
     }
 
     @GetMapping
-    public String getAllIngredients() {
-        return ingredientServices.getAllIngredient();
+    public Collection<Ingredient> getAllIngredients() {
+        return this.ingredientServices.getAllIngredient();
     }
 
 

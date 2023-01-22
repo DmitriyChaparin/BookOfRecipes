@@ -4,13 +4,14 @@ import ch.dmitriy.bookofrecipes.model.Recipe;
 import ch.dmitriy.bookofrecipes.services.RecipeServices;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class RecipeServicesImpl implements RecipeServices {
 
-    private static Map<Long, Recipe> recipes = new LinkedHashMap<>();
+    private static Map<Long, Recipe> recipes = new HashMap<>();
     private Long recipeId = 1L;
 
     @Override
@@ -26,8 +27,8 @@ public class RecipeServicesImpl implements RecipeServices {
     }
 
     @Override
-    public String getAllRecipe() {
-        return recipes.toString();
+    public Collection<Recipe> getAllRecipe() {
+        return recipes.values();
     }
 
     @Override
@@ -49,6 +50,6 @@ public class RecipeServicesImpl implements RecipeServices {
 
     @Override
     public void deleteAllRecipe() {
-        recipes = new LinkedHashMap<>();
+        recipes = new HashMap<>();
     }
 }

@@ -5,10 +5,12 @@ import ch.dmitriy.bookofrecipes.services.RecipeServices;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/recipe")
 public class RecipeController {
-    private RecipeServices recipeServices;
+    private final RecipeServices recipeServices;
 
     public RecipeController(RecipeServices recipeServices) {
 
@@ -31,7 +33,7 @@ public class RecipeController {
     }
 
     @GetMapping
-    public String getAllRecipe() {
+    public Collection<Recipe> getAllRecipe() {
         return recipeServices.getAllRecipe();
     }
 
