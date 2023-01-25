@@ -3,6 +3,7 @@ package ch.dmitriy.bookofrecipes.services.impl;
 import ch.dmitriy.bookofrecipes.model.Ingredient;
 import ch.dmitriy.bookofrecipes.services.IngredientServices;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,20 +36,20 @@ public class IngredientServicesImpl implements IngredientServices {
 
     @Override
     public Ingredient editIngredient(long ingredientId, Ingredient ingredient) {
-        if (ingredients.containsKey(ingredientId)) {
-            ingredients.put(ingredientId, ingredient);
-            return ingredient;
+        if (!ingredients.containsKey(ingredientId)) {
+            throw new NotFoundException("Ингредиент с id" + ingredientId+ " не найден");
         }
-        return null;
+        return ingredients.put(ingredientId, ingredient);
     }
 
     @Override
     public boolean deleteIngredient(long ingredientId) {
-        if (ingredients.containsKey(ingredientId)) {
-            ingredients.remove(ingredientId);
-            return true;
+        if (!ingredients.containsKey(ingredientId)) {
+            throw new NotFoundException("Ингредиент с id" + ingredientId+ " не найден");
+
         }
-        return false;
+        ingredients.remove(ingredientId);
+        return true;
     }
 
     @Override
