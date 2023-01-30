@@ -49,8 +49,8 @@ public class IngredientController {
     @Operation(summary = "Поиск ингредиента по id")
     @ApiResponses(value = {
             @ApiResponse(
-                    responseCode = "200",
-                    description = "Ингредиент найден",
+                    responseCode = "404",
+                    description = "Ингредиент  не найден",
                     content = {
                             @Content(
                                     mediaType = "application/json",
@@ -133,7 +133,7 @@ public class IngredientController {
                     description = "Ингредиенты удалены"
             )
     })
-    public ResponseEntity<Void> deleteAllTransactions() {
+    public ResponseEntity<Void> deleteAllIngredients() {
         ingredientServices.deleteAllIngredients();
         return ResponseEntity.ok().build();
     }

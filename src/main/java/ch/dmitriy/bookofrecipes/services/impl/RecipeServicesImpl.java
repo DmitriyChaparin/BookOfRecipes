@@ -7,11 +7,9 @@ import ch.dmitriy.bookofrecipes.services.RecipeServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,14 +25,16 @@ public class RecipeServicesImpl implements RecipeServices {
     private Long recipeId = 1L;
     final private FilesServices filesServices;
 
+
     public RecipeServicesImpl(FilesServices filesServices) {
         this.filesServices = filesServices;
     }
 
     @PostConstruct
-    private void init() {
+   private void init() {
         readFromFile();
-    }//    ошибка при первом запуске???
+    }
+//      ошибка при первом запуске???
 
     @Override
     public Recipe createRecipe(Recipe recipe) {
@@ -55,8 +55,13 @@ public class RecipeServicesImpl implements RecipeServices {
                 }
             }
             IngredientServicesImpl.ingredientId++;
-            IngredientServicesImpl.ingredients.put(IngredientServicesImpl.ingredientId,recipe.getIngredients().get(i));
-
+            IngredientServicesImpl.ingredients.put(IngredientServicesImpl.ingredientId, recipe.getIngredients().get(i));
+            try {
+                String json = new ObjectMapper().writeValueAsString(ingredients);
+                filesServices.saveIngredientToFile(json);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
         recipes.put(recipeId, recipe);
         recipeId++;
