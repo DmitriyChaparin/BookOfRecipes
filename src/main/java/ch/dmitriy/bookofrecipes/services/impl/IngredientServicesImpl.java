@@ -18,7 +18,7 @@ import java.util.Map;
 public class IngredientServicesImpl implements IngredientServices {
     public static Map<Long, Ingredient> ingredients = new HashMap<>();
 
-    public  static Long ingredientId = 1L;
+    public static Long ingredientId = 1L;
 
 
     final private FilesServicesImpl filesServices;
@@ -83,7 +83,7 @@ public class IngredientServicesImpl implements IngredientServices {
         ingredients = new HashMap<>();
     }
 
-    private void saveToFile() {
+    public void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredients);
             filesServices.saveIngredientToFile(json);
@@ -95,7 +95,7 @@ public class IngredientServicesImpl implements IngredientServices {
     private void readFromFile() {
         try {
             String json = filesServices.readFromFileIngredients();
-            ingredients = new ObjectMapper().readValue(json, new TypeReference<>() {
+            ingredients = new ObjectMapper().readValue(json, new TypeReference<Map<Long,Ingredient>>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
