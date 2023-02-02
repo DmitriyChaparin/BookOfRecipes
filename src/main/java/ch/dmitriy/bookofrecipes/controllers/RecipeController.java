@@ -11,9 +11,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 
 @RestController
@@ -78,7 +85,7 @@ public class RecipeController {
                     content = {
                             @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = Ingredient.class)
+                                    schema = @Schema(implementation = Recipe.class)
                             )
                     }
             )
@@ -137,5 +144,27 @@ public class RecipeController {
     public ResponseEntity<Void> deleteAllRecipe() {
         recipeServices.deleteAllRecipe();
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/exportTxt")
+    @Operation(summary = "Скачать все рецепты в txt формате")
+    public ResponseEntity<Object> downloadDataFileTxt()  {
+        try {
+            Path path = recipeServices.downloadRecipesTxt();
+            if (Files.size(path) == 0) {
+                return ResponseEntity.noContent().build();
+            }
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .contentLength(Files.size(path))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename= \"recipes.txt\"")
+                    .body(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.toString());
+        }
+
+
     }
 }

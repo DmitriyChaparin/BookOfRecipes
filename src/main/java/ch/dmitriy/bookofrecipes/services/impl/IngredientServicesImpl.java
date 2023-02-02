@@ -6,6 +6,9 @@ import ch.dmitriy.bookofrecipes.services.IngredientServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -29,7 +32,11 @@ public class IngredientServicesImpl implements IngredientServices {
 
     @PostConstruct
     private void init() {
-        readFromFile();
+        try {
+            readFromFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -85,7 +92,8 @@ public class IngredientServicesImpl implements IngredientServices {
 
     public void saveToFile() {
         try {
-            String json = new ObjectMapper().writeValueAsString(ingredients);
+            IngredientDataFile ingredientDataFile = new IngredientDataFile(ingredientId, ingredients);
+            String json = new ObjectMapper().writeValueAsString(ingredientDataFile);
             filesServices.saveIngredientToFile(json);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -95,11 +103,22 @@ public class IngredientServicesImpl implements IngredientServices {
     private void readFromFile() {
         try {
             String json = filesServices.readFromFileIngredients();
-            ingredients = new ObjectMapper().readValue(json, new TypeReference<Map<Long,Ingredient>>() {
+            IngredientDataFile ingredientDataFile = new ObjectMapper().readValue(json, new TypeReference<IngredientDataFile>() {
             });
+            ingredientId = ingredientDataFile.getIngredientId();
+            ingredients = ingredientDataFile.getIngredients();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
-        }
+        }//не  правильно добовляются ингредиенты с рецептов
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class IngredientDataFile {
+        private Long ingredientId;
+        private Map<Long, Ingredient> ingredients;
+
     }
 }
 

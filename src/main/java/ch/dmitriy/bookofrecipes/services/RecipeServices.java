@@ -2,6 +2,7 @@ package ch.dmitriy.bookofrecipes.services;
 
 import ch.dmitriy.bookofrecipes.model.Recipe;
 
+import java.io.IOException;
 import java.util.Collection;
 
 public interface RecipeServices {
@@ -16,4 +17,6 @@ public interface RecipeServices {
     boolean deleteRecipe(long recipeId);
 
     void deleteAllRecipe();
+
+    java.nio.file.Path downloadRecipesTxt() throws IOException;
 }
