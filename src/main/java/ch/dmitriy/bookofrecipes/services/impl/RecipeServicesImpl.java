@@ -10,10 +10,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 
 
 @Service
@@ -31,10 +33,16 @@ public class RecipeServicesImpl implements RecipeServices {
     }
 
     @PostConstruct
-   private void init() {
-        readFromFile();
+    private void init() {
+        try {
+            readFromFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-//      ошибка при первом запуске???
+
+    //      ошибка при первом запуске???
+
 
     @Override
     public Recipe createRecipe(Recipe recipe) {
@@ -93,6 +101,7 @@ public class RecipeServicesImpl implements RecipeServices {
     public boolean deleteRecipe(long recipeId) {
         if (recipes.containsKey(recipeId)) {
             recipes.remove(recipeId);
+
             return true;
         }
         return false;
@@ -101,6 +110,30 @@ public class RecipeServicesImpl implements RecipeServices {
     @Override
     public void deleteAllRecipe() {
         recipes = new HashMap<>();
+    }
+
+    @Override
+    public Path downloadRecipesTxt() throws IOException {
+        recipes.getOrDefault(recipeId, null);
+        Path recipesTxt = filesServices.creatTempFile("рецепты");
+        try (Writer writer = Files.newBufferedWriter(recipesTxt, StandardOpenOption.APPEND)) {
+            for (Recipe recipes : recipes.values()) {
+                StringBuilder ingredients = new StringBuilder();
+                StringBuilder instructions = new StringBuilder();
+                for (Ingredient ingredient : recipes.getIngredients()) {
+                    ingredients.append(ingredient).append("\n");
+                }
+                for (String instr : recipes.getCookingInstruction()) {
+                    instructions.append("\n").append(instr);
+                }
+                writer.append(recipes.getName()).append("\n").append("Время приготовления: ")
+                        .append(String.valueOf(recipes.getCookingTime())).append(" минут").append("\nИнгридиенты: \n")
+                        .append(ingredients.toString()).append("Инструкция приготовления: ")
+                        .append(instructions.toString());
+                writer.append("\n\n");
+            }
+        }
+        return recipesTxt;
     }
 
     private void saveToFile() {

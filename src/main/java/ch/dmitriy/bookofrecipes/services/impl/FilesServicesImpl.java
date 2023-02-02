@@ -100,5 +100,12 @@ public class FilesServicesImpl implements FilesServices {
         return new File(ingredientsFilePath + "/" + ingredientsFileName);
     }
 
-
+    @Override
+    public Path creatTempFile(String suffix) {
+        try {
+            return Files.createTempFile(Path.of(recipesFilePath), "tempFile", suffix);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
